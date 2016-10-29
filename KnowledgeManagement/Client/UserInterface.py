@@ -17,7 +17,7 @@ def main():
 def menuChoice():
     valid = ['U','S','E']
     while True:
-        userChoice = str(raw_input('What Would You Like To Do? ').upper())
+        userChoice = str(input('What Would You Like To Do? ').upper())
         if userChoice in valid:
             inputCheck(userChoice)
             break
@@ -29,20 +29,20 @@ def inputCheck(userChoice):
         print('\n==========================================')
         print('You Have Chosen to Upload a file!')
         print('==========================================')
-        ui = str(raw_input('Please enter a filename: '))
-        U = Upload()
+        ui = input('Please enter a filename: ')
+        U=Upload()
         U.upload(ui)
 
     if userChoice == str('S'):
         print('\n==========================================')
         print('You Have Chosen to Search the database!')
         print('==========================================')
-        ui = str(raw_input('Please enter a filename: '))
+        ui = str(input('Please enter a filename: '))
         
     if userChoice == str('E'):
         print('\n==========================================')
         print('You Have Chosen to Edit an existing file!')
         print('==========================================')
-        ui = str(raw_input('Please enter a filename: '))
+        ui = str(input('Please enter a filename: '))
         
 main()

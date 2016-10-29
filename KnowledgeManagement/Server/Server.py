@@ -2,42 +2,55 @@ import sys,socket
 class Server:
     def openPacket(uin):
         print("doing stuff with the packet")
-
+ 
     
     HOST = 'localhost'#define host
-    PORT = 1120 #define port
+    PORT = 8787#define port
 
 
-    s = socket.socket() # define socket
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) # define socket
     s.bind((HOST,PORT)) #bind host and port
     s.listen(10) # Accept 10 connections
-    a=0
     while True: # once connection is accepted:
         #display connected client
         sc, address = s.accept()
-        print address
-
+        print (address)
+        ext = '.'+'txt'
         #create new empty file
-        f = open('received.txt','wb') #open in binary
+        f = open('received'+ext,'wb') #open and write to binary
 
         #load file with recieved data
         while (True):   
-            #get first 3 bytes for size
-            flag = sc.recv(3)
-            #load 1024 bytes
-            l = sc.recv(1024)
-            if flag  == "SOF":
+            #get filename
+            fn = sc.recv(1024).decode()
+            print('filename received: '+ fn)
+            #get Category
+            cat = sc.recv(1024).decode()
+            print('category received: '+ cat)
+            #get keywords
+            keys = sc.recv(1024).decode()
+            print('keywords received: '+ keys)
+            #get start of file
+            flag = sc.recv(3).decode()
+            if(flag  == "SOF"):
                 print("Start of file transfer")
-                while (l):
+                #get file data
+                data = sc.recv(1024)
+                while (data):
+                    #print (data)
                     #write recieved data to file
-                    f.write(l)
+                    f.write(data)
                     #receive next 1024 bytes
-                    l = sc.recv(1024)
-                    #if packet is greater than 1 byte display recieved message
-                    if sys.getsizeof(l) > 1:
-                        print("packet received")
-            #close file
+                    data = sc.recv(1024)
+                    #if packet is greater than 1 byte display received message
+                    print("packet received")
+            print("End of File Transfer..")
             f.close()
+            break
+
+
+                    #close file
+            #f.close()
             #handle the packet
             #openPacket("test")
 #close connection
