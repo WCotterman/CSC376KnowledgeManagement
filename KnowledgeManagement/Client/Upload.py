@@ -5,7 +5,7 @@ class Upload:
     def upload(self,uF):
         #define connection
         HOST = 'localhost'
-        PORT = 8787
+        PORT = 111
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.connect((HOST,PORT))
         #send filename
