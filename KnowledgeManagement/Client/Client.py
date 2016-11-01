@@ -1,13 +1,28 @@
-import sys, socket
+"""creates all the functions that a user can perform
+   Client object gets instantiated and used in UserInterface.py"""
 
-class Upload:
+import socket
+import json
 
-    def upload(self,uF):
-        #define connection
+class Client:
+
+    # define connection
+    def __init__(self):
         HOST = 'localhost'
         PORT = 8787
-        s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.connect((HOST,PORT))
+        self.sock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.sock.connect((HOST,PORT))
+
+    # login after connected to server
+    def login(self, username, pword):
+        packet = json.dumps({'username': username, 'pword': pword})
+        self.sock.send(packet.encode())
+
+        # receives response
+        response = self.sock.recv(1024).decode()
+        return response
+
+    def upload(self,uF):
         #send filename
         s.send(uF.encode())
         #enter file category
