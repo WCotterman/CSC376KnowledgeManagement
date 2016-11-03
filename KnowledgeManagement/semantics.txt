@@ -6,8 +6,9 @@ COMMENTS
 NAMING CONVENTIONS
 - folders are uppercase
 - files are lowercase
-- keep function names short, but use '_' if required (not camelCase)
-- use camelCase for function parameters
+- classes are uppercase, using CamelCase (ex: DataRetriever)
+- keep function names short but use '_' if required, NOT camelCase
+- function parameters are lowercase, using camelCase (ex: fileName)
 
 OBJECTS
 - 'self' is the first parameter for every function
