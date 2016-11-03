@@ -1,19 +1,22 @@
-"""accepts incoming client connections, then assigns each client a data retriever"""
+"""Accepts incoming client connections, then assigns each client a data_retriever"""
 
-import sys
 import socket
-from Data_Retriever import DataRetriever
+from data_retriever import DataRetriever
 
 if __name__ == "__main__":
-    HOST = 'localhost'
-    PORT = 8787
+    host = 'localhost'
+    port = 8787
 
     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    s.bind((HOST,PORT))
+    s.bind((host,port))
     print('server side')
 
+    # accept up to 10 clients at a time
     s.listen(10)
     while True:
+        # sock is new socket, talks to the connected client socket
         sock, address = s.accept()
-        print (address) # display connected client
-        DataRetriever(sock).start() #start communicating with the client
+        print (address)
+
+        # start new thread
+        DataRetriever(sock).start()
