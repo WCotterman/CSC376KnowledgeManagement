@@ -29,7 +29,7 @@ class UserInterface:
                 while True:
                     username = str(input("Username: "))
                     # encrypt the password
-                    pword = hashlib.sha224(str(input("Password: "))).hexdigest()
+                    pword = str(input("Password: "))
 
                     # encrypt password before sending to server
 
