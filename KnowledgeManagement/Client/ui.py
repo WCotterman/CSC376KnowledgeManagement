@@ -16,23 +16,78 @@ class UserInterface:
 
     def user_login(self):
         """
-        Attempts to log self.user in
+        Attempts to log self.user in OR calls function to register new user
         """
 
+        choice = str(input("Do you already have an account? (y/n) ")).lower()
+
         while True:
-            username = str(input("username: "))
-            pword = str(input("password: "))
-            response = self.user.login(username, pword)
 
-            # login didn't work, reloop
-            if(response != "OK"):
-                print("Wrong username or password, please try again.")
+            # login
+            if choice == 'y':
+                while True:
+                    username = str(input("Username: "))
+                    pword = str(input("Password: "))
 
-            # login worked, break out of loop
-            else:
-                self.user.name = username # store the user's name in a property
-                print("Logged on!")
+                    # call client login function
+                    response = self.user.login(username, pword)
+
+                    # login didn't work, reloop
+                    if(response == 0):
+                        print("Wrong username or password, please try again.")
+
+                    # login worked, break out of loop
+                    else:
+                        # store the user's info
+                        self.user.name = username
+                        self.user.pword = pword
+                        print("Logged on!\n")
+
+                        # break out of while loop after success
+                        break
                 break
+
+            # new user
+            elif choice == 'n':
+                # call register function
+                self.register()
+                break
+
+            # improper input
+            else:
+                print('Please enter a correct command (y/n)')
+                choice = str(input('Do you already have an account? ')).lower()
+
+    def register(self):
+        '''
+        Creates a new user
+        '''
+
+        while True:
+            username = str(input("Create a username: "))
+            pword = str(input("Create a password: "))
+
+            # inputs are both non-empty
+            if (username and pword):
+                # call client register function
+                response = self.user.register(username, pword)
+
+                # username already exists, reloop
+                if(response == 0):
+                    print('User name already exists, please enter a new one.')
+
+                # creation worked
+                else:
+                    # store the user's info
+                    self.user.name = username
+                    self.user.pword = pword
+                    print("Account created! \n")
+
+                    # break out of while loop after success
+                    break
+
+            else:
+                print("Please enter non-empty inputs")
 
     def menu_choice(self):
         """
@@ -88,7 +143,7 @@ if __name__ == "__main__":
     print('KNOWLEDGE MANAGEMENT SYSTEM')
     print('==========================================')
 
-    # login phase
+    # login OR create account phase
     UI.user_login()
 
     # user logged in, now can do stuff

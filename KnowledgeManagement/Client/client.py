@@ -23,15 +23,35 @@ class Client:
         :param username: user's name
         :param pword: user's password
 
-        :return: "OK" or "NO" depending on what the data_retriever returns
+        :return: 0 if username doesn't exist or incorrect password OR
+                 1 if username exists and enters correct password
         """
 
         # serialize the username and pword into json
-        info = json.dumps({'username': username, 'pword': pword})
+        info = json.dumps({'type': 'login', 'username': username, 'pword': pword})
         self.sock.send(info.encode())
 
         # wait for response
-        response = self.sock.recv(1024).decode()
+        response = int(self.sock.recv(1024).decode())
+        return response
+
+    def register(self, username, pword):
+        '''
+        Registers a new user
+
+        :param username: new user name
+        :param pword: new user password
+
+        :return: 0 if username is not unique (can't have duplicate usernames)
+                 1 if username is unique and user is put in db
+        '''
+
+        # serialize the username and pword into json
+        info = json.dumps({'type': 'register', 'username': username, 'pword': pword})
+        self.sock.send(info.encode())
+
+        # wait for response
+        response = int(self.sock.recv(1024).decode())
         return response
 
     def upload(self, fileName, file):
