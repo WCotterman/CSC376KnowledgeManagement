@@ -1,0 +1,6 @@
+outputs all the users in the database.db
+
+conn = sqlite3.connect('database.db')
+c = conn.execute("SELECT * FROM USERS")
+for user in c:
+    print(user[0] + " " + user[1])
