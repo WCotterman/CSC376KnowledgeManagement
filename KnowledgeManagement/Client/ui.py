@@ -1,6 +1,7 @@
 """Handles the user inputs and calls each client function accordingly"""
 
 from client import Client
+import hashlib
 
 class UserInterface:
 
@@ -16,7 +17,7 @@ class UserInterface:
 
     def user_login(self):
         """
-        Attempts to log self.user in OR calls function to register new user
+        Attempts to log self.user in OR calls register function for new user
         """
 
         choice = str(input("Do you already have an account? (y/n) ")).lower()
@@ -27,7 +28,10 @@ class UserInterface:
             if choice == 'y':
                 while True:
                     username = str(input("Username: "))
-                    pword = str(input("Password: "))
+                    # encrypt the password
+                    pword = hashlib.sha224(str(input("Password: "))).hexdigest()
+
+                    # encrypt password before sending to server
 
                     # call client login function
                     response = self.user.login(username, pword)

@@ -40,7 +40,7 @@ class Client:
         Registers a new user
 
         :param username: new user name
-        :param pword: new user password
+        :param pword: new user password (encrypyted)
 
         :return: 0 if username is not unique (can't have duplicate usernames)
                  1 if username is unique and user is put in db

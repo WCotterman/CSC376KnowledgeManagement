@@ -47,7 +47,7 @@ class DataRetriever( threading.Thread ):
             # must turn int into str to send over the socket
             self.connection.send(str(response).encode())
 
-            # only break loop when login/register is successful
+            # only break login loop when login/register is successful
             if response == 1:
                 break
 
