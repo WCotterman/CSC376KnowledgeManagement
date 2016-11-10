@@ -2,50 +2,57 @@
 
 import threading
 import json
-import sys,socket,datetime,sqlite3,random
+import datetime
+import sqlite3
+import random
 from connections import connections
+from db import DB
 
 class DataRetriever( threading.Thread ):
+
     def __init__(self, connection):
         threading.Thread.__init__(self)
         self.connection = connection
+
+        # establish a database connection
+        self.db = DB()
 
     def run(self):
         """
         Handles the interaction with the client. First it verifies the login,
         then it starts receiving requests for files
+
+        info is a python dictionary used for logging user in:
+            KEYS
+            'type' : either 'login' or 'register'
+            'username'
+            'pword'
         """
 
         # login loop
         while True:
             info = self.connection.recv(1024).decode()
-            response = self.login(info)
-            self.connection.send(response.encode())
+            # turns info (a json string) into a python dictionary
+            info = json.loads(info)
 
-            # only break loop when login is verified
-            if response == "OK":
+            username = info['username']
+            pword = info['pword']
+
+            # determine if user is logging in or creating new user
+            if(info['type'] == 'login'):
+                response = self.db.login(username, pword)
+            else:
+                response = self.db.register(username, pword)
+
+            # must turn int into str to send over the socket
+            self.connection.send(str(response).encode())
+
+            # only break login loop when login/register is successful
+            if response == 1:
                 break
 
         # next loop will handle client requests
 
-    def login(self, info):
-        """
-        Queries db to verify user login info
-
-        :param info: a json object consisting of a username and pword
-
-        :return: "OK" if username exists and enters correct password OR
-                 "NO" if username doesn't exist or password incorrect
-        """
-
-        # turns info into a python dictionary
-        info = json.loads(info)
-
-        # this is just a test, haven't connected to DB yet
-        if info['username'] == "Jack" and info['pword'] == "Klein":
-            return "OK"
-        else:
-            return "NO"
 
     def upload(self, fileName, source, file, category=None, keys=None):
         """
@@ -121,14 +128,14 @@ class DataRetriever( threading.Thread ):
 
     def addToDatabase(self, uid, source, filename, category=None, keys=None):
         """
-    Add file entry to database
+        Add file entry to database
 
         :param uid: unique identifier for file
-    :param source: filepath of the new file
-    :param filename: name of new file
-    :param category(optional): file category, for top level organization
-    :param keys(optional): keywords for search functions
-    """
+        :param source: filepath of the new file
+        :param filename: name of new file
+        :param category(optional): file category, for top level organization
+        :param keys(optional): keywords for search functions
+        """
         timestamp = datetime.datetime.now()
         conn = sqlite3.connect('files.db')
         c = conn.cursor()
