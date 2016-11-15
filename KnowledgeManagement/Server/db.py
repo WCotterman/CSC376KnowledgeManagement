@@ -91,6 +91,6 @@ class DB:
             self.conn.commit()
             return 1
 
-        # file with fileName already exists
+        # fileName not unique
         except sqlite3.IntegrityError:
             return 0
