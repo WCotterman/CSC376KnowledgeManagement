@@ -28,7 +28,6 @@ class UserInterface:
             if choice == 'y':
                 while True:
                     username = str(input("Username: "))
-                    # encrypt the password
                     pword = str(input("Password: "))
 
                     # encrypt password before sending to server
@@ -44,7 +43,6 @@ class UserInterface:
                     else:
                         # store the user's info
                         self.user.name = username
-                        self.user.pword = pword
                         print("Logged on!\n")
 
                         # break out of while loop after success
@@ -84,7 +82,6 @@ class UserInterface:
                 else:
                     # store the user's info
                     self.user.name = username
-                    self.user.pword = pword
                     print("Account created! \n")
 
                     # break out of while loop after success
@@ -119,9 +116,17 @@ class UserInterface:
             print('\n==========================================')
             print('You have chosen to upload a file!')
             print('==========================================')
-            file = input('Please enter a filename: ')
+            fileName = input('Please enter a filename: ')
+            category = input('Please enter a category: ')
+            keywords = input('Please enter keywords: ')
 
-            #self.user.upload(file)
+            response = self.user.upload(fileName, category, keywords)
+
+            # results of upload
+            if response == 1:
+                print('Successful upload!\n')
+
+            else: print('Unsuccessful upload.\n')
 
         elif choice == 'S':
             print('\n==========================================')

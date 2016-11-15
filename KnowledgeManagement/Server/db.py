@@ -2,6 +2,7 @@
     DB object used by the data_retriever"""
 
 import sqlite3
+import datetime
 
 class DB:
 
@@ -17,7 +18,6 @@ class DB:
 
         self.conn.execute('''CREATE TABLE IF NOT EXISTS FILES
                     (ID         TEXT,
-                     source     TEXT,
                      filename   TEXT,
                      category   TEXT,
                      keywords   TEXT,
@@ -70,3 +70,23 @@ class DB:
         # username is not unique
         except sqlite3.IntegrityError:
             return 0
+
+    def upload(self, id, fileName, category, keywords):
+        '''
+        Inserts new file into the FILES table
+
+        :param id: username of user who's uploading file
+        :param fileName: name of file
+        :param category: category of file
+        :param keywords: keywords
+
+        :return: 0 if upload is not successful
+                 1 if upload is successful
+        '''
+
+        timestamp = datetime.datetime.now()
+
+        self.conn.execute("INSERT INTO FILES VALUES(?,?,?,?,?)", (id, fileName, category, keywords, timestamp))
+        self.conn.commit()
+
+        return 1
