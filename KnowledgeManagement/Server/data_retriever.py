@@ -68,7 +68,7 @@ class DataRetriever( threading.Thread ):
                     data = self.connection.recv(1024).decode()
                     file.write(data)
 
-                    # TODO PROTOCOL FOR END OF FILE
+                    # TODO: PROTOCOL FOR END OF FILE
                     # while(data):
                     #     # 1 = end of file (IMPORTANT)
                     #     if data == 1:

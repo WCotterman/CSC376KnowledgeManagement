@@ -30,7 +30,7 @@ class UserInterface:
                     username = str(input("Username: "))
                     pword = str(input("Password: "))
 
-                    # encrypt password before sending to server
+                    # TODO: ENCRYPT PASSWORD
 
                     # call client login function
                     response = self.user.login(username, pword)

@@ -91,7 +91,8 @@ class Client:
             chunk = file.read(1024)
             self.sock.send(chunk)
 
-            # TODO PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
+            # TODO: PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
+            # TODO: HAVE TO NOTIFY DATA RETRIEVER WHEN FILE IS DONE
 
             #send chunks of file
             # while (chunk):
