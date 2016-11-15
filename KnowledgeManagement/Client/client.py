@@ -28,7 +28,10 @@ class Client:
         """
 
         # serialize the username and pword into json
-        info = json.dumps({'type': 'login', 'username': username, 'pword': pword})
+        info = json.dumps({'type': 'login',
+                           'username': username,
+                           'pword': pword})
+
         self.sock.send(info.encode())
 
         # wait for response
@@ -47,22 +50,59 @@ class Client:
         '''
 
         # serialize the username and pword into json
-        info = json.dumps({'type': 'register', 'username': username, 'pword': pword})
+        info = json.dumps({'type': 'register',
+                           'username': username,
+                           'pword': pword})
+
         self.sock.send(info.encode())
 
         # wait for response
         response = int(self.sock.recv(1024).decode())
         return response
 
-    def upload(self, fileName, file):
+    def upload(self, fileName, category, keywords):
         """
         Asks the data_retriever to upload a file to the db
 
-        :param fileName: name of new file
-        :param file: contents of new file
+        :param fileName: name of new file (file is stored on user's computer)
+        :param category: file category
+        :param: keywords: file keywords
 
-        :return: relays the data_retriever's msg
+        :return: 0 if upload is not successful
+                 1 if upload is successful
+
         """
+
+        # initial msg
+        info = json.dumps({'type': 'upload',
+                           'user': self.name,
+                           'name': fileName,
+                           'category': category,
+                           'keywords': keywords})
+
+        self.sock.send(info.encode())
+
+        # server tells client to send the file if name is unique
+        if self.sock.recv(1024).decode() == '1':
+            # get contents of file
+            file = open(fileName, "rb")
+
+            #break file down into 1024 byte chunks
+            chunk = file.read(1024)
+            self.sock.send(chunk)
+
+            # TODO PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
+
+            #send chunks of file
+            # while (chunk):
+            #     self.sock.send(chunk)
+            #     chunk = file.read(1024)
+
+            # 1 = EOF
+            # self.sock.send('1'.encode())
+
+        response = int(self.sock.recv(1024).decode())
+        return response
 
     def search(self, fileName):
         """
