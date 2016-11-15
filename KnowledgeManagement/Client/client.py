@@ -82,19 +82,24 @@ class Client:
 
         self.sock.send(info.encode())
 
-        # get contents of file
-        file = open(fileName, "rb")
+        # server tells client to send the file if name is unique
+        if self.sock.recv(1024).decode() == '1':
+            # get contents of file
+            file = open(fileName, "rb")
 
-        #break file down into 1024 byte chunks
-        chunk = file.read(1024)
-
-        #send chunks of file
-        while (chunk):
-            self.sock.send(chunk)
+            #break file down into 1024 byte chunks
             chunk = file.read(1024)
+            self.sock.send(chunk)
 
-        # 1 = EOF
-        self.sock.send('1'.encode())
+            # TODO PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
+
+            #send chunks of file
+            # while (chunk):
+            #     self.sock.send(chunk)
+            #     chunk = file.read(1024)
+
+            # 1 = EOF
+            # self.sock.send('1'.encode())
 
         response = int(self.sock.recv(1024).decode())
         return response

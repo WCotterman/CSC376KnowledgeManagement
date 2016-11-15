@@ -126,7 +126,7 @@ class UserInterface:
             if response == 1:
                 print('Successful upload!\n')
 
-            else: print('Unsuccessful upload.\n')
+            else: print('A file with that name already exists.\n')
 
         elif choice == 'S':
             print('\n==========================================')

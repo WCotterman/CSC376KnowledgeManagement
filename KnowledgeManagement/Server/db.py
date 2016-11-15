@@ -18,7 +18,7 @@ class DB:
 
         self.conn.execute('''CREATE TABLE IF NOT EXISTS FILES
                     (ID         TEXT,
-                     filename   TEXT,
+                     filename   TEXT PRIMARY KEY  NOT NULL,
                      category   TEXT,
                      keywords   TEXT,
                      timestamp  TEXT);''')
@@ -80,13 +80,17 @@ class DB:
         :param category: category of file
         :param keywords: keywords
 
-        :return: 0 if upload is not successful
+        :return: 0 if upload is not successful (can't have duplicate fileNames)
                  1 if upload is successful
         '''
 
         timestamp = datetime.datetime.now()
 
-        self.conn.execute("INSERT INTO FILES VALUES(?,?,?,?,?)", (id, fileName, category, keywords, timestamp))
-        self.conn.commit()
+        try:
+            self.conn.execute("INSERT INTO FILES VALUES(?,?,?,?,?)", (id, fileName, category, keywords, timestamp))
+            self.conn.commit()
+            return 1
 
-        return 1
+        # file with fileName already exists
+        except sqlite3.IntegrityError:
+            return 0

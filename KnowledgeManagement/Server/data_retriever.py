@@ -30,7 +30,6 @@ class DataRetriever( threading.Thread ):
             - info dict always has key 'type'
         """
 
-        # login loop
         while True:
             info = self.connection.recv(1024).decode()
             info = json.loads(info)
@@ -49,23 +48,7 @@ class DataRetriever( threading.Thread ):
                 response = self.db.register(username, pword)
 
             elif type == 'upload':
-                # create the file on server side
-                file = open('files/' + info['name'], 'w')
-
-                # receive contents of the file
-                data = self.connection.recv(1024).decode()
-                while(data):
-                    # 1 = end of file (IMPORTANT)
-                    if data == '1':
-                        break
-                    else:
-                        file.write(data)
-                        # receive next chunk of file (or EOF)
-                        data = self.connection.recv(1024).decode()
-
-                file.close()
-
-                # db parameters
+                # file upload parameters for fb
                 id = info['user']
                 fileName = info['name']
                 category = info['category']
@@ -73,19 +56,37 @@ class DataRetriever( threading.Thread ):
 
                 response = self.db.upload(id, fileName, category, keywords)
 
+                # file name is unique, accept file
+                if response == 1:
+                    # tell client to send the file
+                    self.connection.send('1'.encode())
+
+                    # create the file on server side
+                    file = open('files/' + info['name'], 'w')
+
+                    # receive contents of the file
+                    data = self.connection.recv(1024).decode()
+                    file.write(data)
+
+                    # TODO PROTOCOL FOR END OF FILE
+                    # while(data):
+                    #     # 1 = end of file (IMPORTANT)
+                    #     if data == 1:
+                    #         break
+                    #     else:
+                    #         file.write(data)
+                    #         # receive next chunk of file (or EOF flag)
+                    #         data = self.connection.recv(1024).decode()
+
+                    file.close()
+
+                # else tell the client not to send over the file
+                else:
+                    self.connection.send('0'.encode())
+
             self.connection.send(str(response).encode())
 
-    def upload(self, fileName, file, category=None, keys=None):
-        """
-        Inserts the new file into the db
 
-        :param fileName: name of new file
-        :param file: contents of new file
-        :param category(optional): file category, for top level organization
-        :param keys(optional): keywords for search functions
-
-        :return: a msg indicating success or not
-        """
 
     def search(self, fileName):
         """
