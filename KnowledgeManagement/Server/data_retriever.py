@@ -5,6 +5,7 @@ import json
 import datetime
 import sqlite3
 import random
+import hashlib
 from connections import connections
 from db import DB
 
@@ -40,11 +41,13 @@ class DataRetriever( threading.Thread ):
             if type == 'login':
                 username = info['username']
                 pword = info['pword']
+
                 response = self.db.login(username, pword)
 
             elif type == 'register':
                 username = info['username']
                 pword = info['pword']
+
                 response = self.db.register(username, pword)
 
             elif type == 'upload':
@@ -64,23 +67,19 @@ class DataRetriever( threading.Thread ):
                     # create the file on server side
                     file = open('files/' + info['name'], 'w')
 
-                    # receive contents of the file
-                    data = self.connection.recv(1024).decode()
-                    file.write(data)
+                    # keep recieving until EOF
+                    while(True):
+                        data = self.connection.recv(1024).decode()
 
-                    # TODO PROTOCOL FOR END OF FILE
-                    # while(data):
-                    #     # 1 = end of file (IMPORTANT)
-                    #     if data == 1:
-                    #         break
-                    #     else:
-                    #         file.write(data)
-                    #         # receive next chunk of file (or EOF flag)
-                    #         data = self.connection.recv(1024).decode()
+                        # 2 = EOF
+                        if data == '2':
+                            break
+
+                        else: file.write(data)
 
                     file.close()
 
-                # else tell the client not to send over the file
+                # else tell the client not to send over the file (duplicate)
                 else:
                     self.connection.send('0'.encode())
 

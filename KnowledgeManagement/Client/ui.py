@@ -29,8 +29,8 @@ class UserInterface:
                 while True:
                     username = str(input("Username: "))
                     pword = str(input("Password: "))
-
-                    # encrypt password before sending to server
+                    # hash password
+                    pword = hashlib.sha1(pword.encode()).hexdigest()
 
                     # call client login function
                     response = self.user.login(username, pword)
@@ -68,6 +68,8 @@ class UserInterface:
         while True:
             username = str(input("Create a username: "))
             pword = str(input("Create a password: "))
+            # hash password
+            pword = hashlib.sha1(pword.encode()).hexdigest()
 
             # inputs are both non-empty
             if (username and pword):

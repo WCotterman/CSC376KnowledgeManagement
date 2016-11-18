@@ -87,24 +87,16 @@ class Client:
             # get contents of file
             file = open(fileName, "rb")
 
-            #break file down into 1024 byte chunks
+            # break file down into 1024 byte chunks
             chunk = file.read(1024)
-            #added the following short loop, if what I read is right this should help send the full file and then end the file with the shutdown method call
+
+            # send chunks of data until end
             while (chunk):
                 self.sock.send(chunk)
                 chunk = file.read(1024)
+
+            self.sock.send('2'.encode())
             file.close()
-            
-
-            # TODO PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
-
-            #send chunks of file
-            # while (chunk):
-            #     self.sock.send(chunk)
-            #     chunk = file.read(1024)
-
-            # 1 = EOF
-            # self.sock.send('1'.encode())
 
         response = int(self.sock.recv(1024).decode())
         return response
