@@ -2,7 +2,7 @@
 
 from client import Client
 import hashlib
-
+import os
 class UserInterface:
 
     def __init__(self, user):
@@ -14,51 +14,54 @@ class UserInterface:
         """
 
         self.user = user
-
+    def login(self):
+        #MAIN login choice
+        print("Choose an option...")
+        print("L -> Login to existing account")
+        print("C -> Create Account")
+        print("E -> Exit")
+        choice = str(input("What would you like to do? ")).lower()
+        return choice
     def user_login(self):
         """
         Attempts to log self.user in OR calls register function for new user
         """
 
-        choice = str(input("Do you already have an account? (y/n) ")).lower()
+        choice=self.login()
 
-        while True:
+        if choice == 'l':
+            username = str(input("Username: "))
+            pword = str(input("Password: "))
+            # hash password
+            pword = hashlib.sha1(pword.encode()).hexdigest()
 
-            # login
-            if choice == 'y':
-                while True:
-                    username = str(input("Username: "))
-                    pword = str(input("Password: "))
-                    # hash password
-                    pword = hashlib.sha1(pword.encode()).hexdigest()
+            # call client login function
+            response = self.user.login(username, pword)
 
-                    # call client login function
-                    response = self.user.login(username, pword)
-
-                    # login didn't work, reloop
-                    if(response == 0):
-                        print("Wrong username or password, please try again.")
-
-                    # login worked, break out of loop
-                    else:
-                        # store the user's info
-                        self.user.name = username
-                        print("Logged on!\n")
-
-                        # break out of while loop after success
-                        break
-                break
-
-            # new user
-            elif choice == 'n':
-                # call register function
-                self.register()
-                break
-
-            # improper input
+            # login didn't work, reloop
+            if(response == 0):
+                print("Wrong username or password")
+                self.user_login()
+                # login worked, break out of loop
             else:
-                print('Please enter a correct command (y/n)')
-                choice = str(input('Do you already have an account? ')).lower()
+                # store the user's info
+                self.user.name = username
+                print("Logged on!\n")
+
+                    # break out of while loop after success
+                    # ^^lies there is no while loop idk who wrote this but.....
+            # new user
+        elif choice == 'c':
+                # call register function
+            self.register()
+                # improper input
+        elif choice == 'e':
+            # exit out of program
+            os._exit(0)
+        else:
+                #if input is different
+            print('Please enter a correct command')
+            self.user_login()
 
     def register(self):
         '''
@@ -98,7 +101,7 @@ class UserInterface:
         the command to input_check
         """
 
-        valid = ['U','S','E']
+        valid = ['U','S','E','Q']
         while True:
             choice = str(input('What would you like to do? ').upper())
             if choice in valid:
@@ -138,13 +141,15 @@ class UserInterface:
 
             #self.user.search(file)
 
-        else: # choice == 'E'
+        elif choice == 'E':
             print('\n==========================================')
             print('You have chosen to edit an existing file!')
             print('==========================================')
             file = str(input('Please enter a filename: '))
 
             #self.user.edit(file)
+        else:
+            os._exit(0)
 
 if __name__ == "__main__":
     user = Client()
@@ -163,6 +168,7 @@ if __name__ == "__main__":
         print('U -> Upload  a file')
         print('S -> Search for a file')
         print('E -> Edit an existing file')
+        print('Q -> Quit')
         UI.menu_choice()
 
 
