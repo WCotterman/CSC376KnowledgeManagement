@@ -24,7 +24,7 @@ class UserInterface:
         print("E -> Exit")
         choice = str(input("What would you like to do? ")).lower()
         return choice
-        
+
     def user_login(self):
         """
         Attempts to log self.user in OR calls register function for new user
@@ -77,6 +77,8 @@ class UserInterface:
         while True:
             username = str(input("Create a username: "))
             pword = str(input("Create a password: "))
+            # hash password
+            pword = hashlib.sha1(pword.encode()).hexdigest()
 
             # inputs are both non-empty
             if (username and pword):
@@ -156,6 +158,7 @@ class UserInterface:
             #self.user.edit(file)
         else:
             os._exit(0)
+
 if __name__ == "__main__":
     user = Client()
     UI = UserInterface(user)

@@ -75,6 +75,8 @@ class DataRetriever( threading.Thread ):
                         if data == '2':
                             break
 
+                        else: file.write(data)
+
                     file.close()
 
                 # else tell the client not to send over the file (duplicate)

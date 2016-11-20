@@ -3,6 +3,7 @@
 
 import socket
 import json
+import time
 
 class Client:
 
@@ -87,20 +88,16 @@ class Client:
             # get contents of file
             file = open(fileName, "rb")
 
-            #break file down into 1024 byte chunks
+            # break file down into 1024 byte chunks
             chunk = file.read(1024)
-            self.sock.send(chunk)
 
-            # TODO: PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
-            # TODO: HAVE TO NOTIFY DATA RETRIEVER WHEN FILE IS DONE
-
-            #send chunks of file
-            # while (chunk):
-            #     self.sock.send(chunk)
-            #     chunk = file.read(1024)
-
-            # 1 = EOF
-            # self.sock.send('1'.encode())
+            # send chunks of data until end
+            while (chunk):
+                self.sock.send(chunk)
+                chunk = file.read(1024)
+            time.sleep(1)
+            self.sock.send('2'.encode())
+            file.close()
 
         response = int(self.sock.recv(1024).decode())
         return response
