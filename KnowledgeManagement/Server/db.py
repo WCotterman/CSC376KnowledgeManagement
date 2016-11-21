@@ -95,6 +95,33 @@ class DB:
         except sqlite3.IntegrityError:
             return 0
 
+    def search(self, id, fileName):
+        '''
+        Search for files into the FILES table
+
+        :param id: username of user who's uploading file
+        :param fileName: name of file
+        :more can be adden if needed..
+
+        :return: 0 if upload is not successful (can't have duplicate fileNames)
+                 1 if upload is successful
+        '''
+
+        cursor = self.conn.execute("SELECT * FROM FILES WHERE ID == ? AND filename == ?", (id, fileName))
+
+        # name_ will either be the one result, or 'None'
+        name_ = cursor.fetchone()
+
+        if name_ == None:
+            return 0
+
+        elif name_[1] == fileName:
+            return 1
+
+        # backup catchall 
+        else:
+            return 0
+
     def delete(self,fileName):
         '''
         Attempts to delete fileName from the FILES table

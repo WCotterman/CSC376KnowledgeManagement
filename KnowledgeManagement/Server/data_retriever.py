@@ -8,6 +8,7 @@ import random
 import hashlib
 from connections import connections
 from db import DB
+import time 
 
 class DataRetriever( threading.Thread ):
 
@@ -80,6 +81,32 @@ class DataRetriever( threading.Thread ):
                     file.close()
 
                 # else tell the client not to send over the file (duplicate)
+                else:
+                    self.connection.send('0'.encode())
+
+            elif type =='search':
+                #parameters
+                id = info['user']
+                fileName = info['name']
+
+                if self.db.search(id, fileName) == 1:
+                    # File is in the db!
+                    
+                    print("sending file to client..")
+                    self.connection.send('1'.encode())
+
+                    file = open('files/'+fileName, "rb")
+
+                    # break file down into 1024 byte chunks
+                    chunk = file.read(1024)
+                     # send chunks of data until end
+                    while (chunk):
+                        self.connection.send(chunk)
+                        chunk = file.read(1024)
+                    time.sleep(1)
+                    self.connection.send('2'.encode())
+                    file.close()
+
                 else:
                     self.connection.send('0'.encode())
 
