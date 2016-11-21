@@ -118,8 +118,7 @@ class Client:
         path = (str(os.path.abspath(fileName)))
         os.remove(path)
 
-
-    def search(self, fileName):
+    def search(self, query):
         """
         Asks the data_retriever to search an existing file in the db
 
@@ -127,35 +126,65 @@ class Client:
 
         :return: contents of file, or an error msg if file doesn't exist
         """
-        # initial msg
-        info = json.dumps({'type': 'search',
-                            'user': self.name,
-                           'name': fileName,})
+        info = json.dumps({'type':'search','query':query})
 
         self.sock.send(info.encode())
 
-        # server tells client file 
-        
-        if self.sock.recv(1024).decode() == '1':
+        result = self.sock.recv(1024).decode()
+        if result == 'SOQ':
+            print("\nSuccess, here are possible matches:")
+            self.retrieveQuery(query)
+            return 1
+        else:
+            return 0
 
-            file = open('files/' + fileName, 'w')
-            #data = self.sock.recv(1024).decode()
+    def download(self, fileName):
+        """
+        Asks the data_retriever to search an existing file in the db
+
+        :param fileName: name of file
+
+        :return: contents of file, or an error msg if file doesn't exist
+        """
+        info = json.dumps({'type':'download','fileName':fileName})
+
+        self.sock.send(info.encode())
+
+        flag = self.sock.recv(1024).decode()
+        if flag == 'SOF':
+            self.retrieveFile(fileName)
+            return 1
+        
+    def retrieveQuery(self,query):
+            data = self.sock.recv(1024).decode()
+            #keep recieving until EOQ
+            while(True):
+                if sys.getsizeof(data)<1:
+                    return 0
+                else:
+                    data = self.sock.recv(1024).decode()
+                    print(data+"\n")
+                    return 1
+            
+    def retrieveFile(self,fileName):
+            # create the file on client side
+            file = open('downloads/' + fileName, 'w')
+            data = self.sock.recv(1024).decode()
 
             #keep recieving until EOF
             while(True):
                 data = self.sock.recv(1024).decode()
                 
-                if data == '2':
+                if data == 'EOF':
                     file.close()
                     break
                 else:
                     file.write(data)
             file.close()
-            return 1
-        else:
-            return 0
+                
 
-
+        
+              
     def edit(self, fileName, newFile):
         """
         Asks the data_retriever to replace content of a file
