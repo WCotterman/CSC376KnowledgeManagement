@@ -107,7 +107,7 @@ class UserInterface:
         the command to input_check
         """
 
-        valid= ['U','S','E','Q']
+        valid= ['U','S','D','Q']
         while True:
             choice = str(input('What would you like to do? ').upper())
             if choice in valid:
@@ -120,9 +120,9 @@ class UserInterface:
         """
         Based on the user's command, the appropriate client function is called.
 
-        :param choice: a string that is in ['U','S','E']
+        :param choice: a string that is in ['U','S','D']
 
-                       ^^^^ stop lying it should be ['U','S','E','Q'] < this Q
+                       ^^^^ stop lying it should be ['U','S','D','Q'] < this Q
         """
 
         if choice == 'U':
@@ -149,13 +149,13 @@ class UserInterface:
 
             #self.user.search(file)
 
-        elif choice == 'E':
+        elif choice == 'D':
             print('\n==========================================')
-            print('You have chosen to edit an existing file!')
+            print('You have chosen to delete an existing file!')
             print('==========================================')
             file = str(input('Please enter a filename: '))
 
-            #self.user.edit(file)
+            self.user.delete(file)
         else:
             os._exit(0)
 
@@ -175,7 +175,7 @@ if __name__ == "__main__":
         print('Choose an option...')
         print('U -> Upload  a file')
         print('S -> Search for a file')
-        print('E -> Edit an existing file')
+        print('D -> Delete an existing file')
         print('Q -> Quit')
         UI.menu_choice()
 

@@ -4,6 +4,7 @@
 import socket
 import json
 import time
+import os,sys
 
 class Client:
 
@@ -101,6 +102,22 @@ class Client:
 
         response = int(self.sock.recv(1024).decode())
         return response
+
+    def delete(self, fileName):
+        """
+        Asks the data_retriever to delete a file
+
+        :param fileName: name of the file you want deleted
+        """
+
+        info = json.dumps({'type':'delete',
+                           'fileName': fileName})
+
+        self.sock.send(info.encode())
+
+        path = (str(os.path.abspath(fileName)))
+        os.remove(path)
+
 
     def search(self, fileName):
         """

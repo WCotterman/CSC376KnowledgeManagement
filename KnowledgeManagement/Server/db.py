@@ -94,3 +94,22 @@ class DB:
         # fileName not unique
         except sqlite3.IntegrityError:
             return 0
+
+    def delete(self,fileName):
+        '''
+        Attempts to delete fileName from the FILES table
+
+        :param fileName: name of file
+
+        :return: 0 if file is not found
+                 1 if the file is found in the FILES table and is deleted
+        '''
+        try:
+            cursor = self.conn.execute("DELETE FROM FILES WHERE filename=?",(fileName,))
+            self.conn.commit()
+
+        # fileName not found
+        except sqlite3.Error:
+            return 0
+        
+        
