@@ -1,0 +1,17 @@
+COMMENTS
+- describe classes and functions with triple quotes
+- for functions, also explain the parameters and what it returns
+- use '#' above a block of code that needs  explanation
+
+NAMING CONVENTIONS
+- folders are uppercase
+- files are lowercase
+- classes are uppercase, using CamelCase (ex: DataRetriever)
+- keep function names short but use '_' if required, NOT camelCase
+- function parameters are lowercase, using camelCase (ex: fileName)
+
+OBJECTS
+- 'self' is the first parameter for every function
+
+
+(add more rules if necessary)

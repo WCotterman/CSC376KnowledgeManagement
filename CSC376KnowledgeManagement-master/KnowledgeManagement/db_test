@@ -1,0 +1,12 @@
+# outputs all the users in the database.db
+conn = sqlite3.connect('database.db')
+c = conn.execute("SELECT * FROM USERS")
+for user in c:
+    print(user[0] + " " + user[1])
+
+
+# outputs all files in database.db
+conn = sqlite3.connect('database.db')
+files = conn.execute("SELECT * FROM FILES")
+for file in files:
+    print(file)
