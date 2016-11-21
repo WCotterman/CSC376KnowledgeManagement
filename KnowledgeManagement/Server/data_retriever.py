@@ -83,6 +83,16 @@ class DataRetriever( threading.Thread ):
                 else:
                     self.connection.send('0'.encode())
 
+            elif type == 'delete':
+                fileName = info['fileName']
+
+                response = self.db.delete(fileName)
+
+                if response == 0:
+                    print("The file was not deleted. Verify that the file exists.")
+                else:
+                    print("The file was deleted")
+
             self.connection.send(str(response).encode())
 
 
