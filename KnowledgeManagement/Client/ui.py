@@ -107,7 +107,7 @@ class UserInterface:
         the command to input_check
         """
 
-        valid= ['U','S','D','Q']
+        valid= ['U','R','S','D','Q']
         while True:
             choice = str(input('What would you like to do? ').upper())
             if choice in valid:
@@ -141,19 +141,28 @@ class UserInterface:
 
             else: print('A file with that name already exists.\n')
 
+        elif choice == 'R':
+            print('\n==========================================')
+            print('You have chosen to retrieve a file!')
+            print('==========================================')
+            file = str(input('Please enter a filename: '))
+
+            response = self.user.download(file)
+            if response == 1:
+                print("Success!! file retrieved...\n")
+            else: 
+                print ("Error!! cannot find file.. ")
+
+
         elif choice == 'S':
             print('\n==========================================')
-            print('You have chosen to search the database!')
+            print('You have chosen to search for a file!')
             print('==========================================')
-            fileName = str(input('Please enter a filename: '))
+            file = str(input('Please enter a search term: '))
+            if self.user.search(file):
+                print("")
 
-            response = self.user.search(fileName)
-            # results of search
-            if response == 1:
-                print(fileName, ': is Found!\n')
-
-            else: print('File "NOT" Found!\n')
-
+                
         elif choice == 'D':
             print('\n==========================================')
             print('You have chosen to delete an existing file!')
@@ -179,6 +188,7 @@ if __name__ == "__main__":
     while True:
         print('Choose an option...')
         print('U -> Upload  a file')
+        print('R -> Retrieve  a file')
         print('S -> Search for a file')
         print('D -> Delete an existing file')
         print('Q -> Quit')
