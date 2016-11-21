@@ -3,6 +3,8 @@
 
 import socket
 import json
+import time
+import os,sys
 
 class Client:
 
@@ -87,23 +89,35 @@ class Client:
             # get contents of file
             file = open(fileName, "rb")
 
-            #break file down into 1024 byte chunks
+            # break file down into 1024 byte chunks
             chunk = file.read(1024)
-            self.sock.send(chunk)
 
-            # TODO: PROTOCOL FOR END OF FILE (currently only sends first 1024 bytes)
-            # TODO: HAVE TO NOTIFY DATA RETRIEVER WHEN FILE IS DONE
-
-            #send chunks of file
-            # while (chunk):
-            #     self.sock.send(chunk)
-            #     chunk = file.read(1024)
-
-            # 1 = EOF
-            # self.sock.send('1'.encode())
+            # send chunks of data until end
+            while (chunk):
+                self.sock.send(chunk)
+                chunk = file.read(1024)
+            time.sleep(1)
+            self.sock.send('2'.encode())
+            file.close()
 
         response = int(self.sock.recv(1024).decode())
         return response
+
+    def delete(self, fileName):
+        """
+        Asks the data_retriever to delete a file
+
+        :param fileName: name of the file you want deleted
+        """
+
+        info = json.dumps({'type':'delete',
+                           'fileName': fileName})
+
+        self.sock.send(info.encode())
+
+        path = (str(os.path.abspath(fileName)))
+        os.remove(path)
+
 
     def search(self, fileName):
         """
@@ -113,6 +127,34 @@ class Client:
 
         :return: contents of file, or an error msg if file doesn't exist
         """
+        # initial msg
+        info = json.dumps({'type': 'search',
+                            'user': self.name,
+                           'name': fileName,})
+
+        self.sock.send(info.encode())
+
+        # server tells client file 
+        
+        if self.sock.recv(1024).decode() == '1':
+
+            file = open('files/' + fileName, 'w')
+            #data = self.sock.recv(1024).decode()
+
+            #keep recieving until EOF
+            while(True):
+                data = self.sock.recv(1024).decode()
+                
+                if data == '2':
+                    file.close()
+                    break
+                else:
+                    file.write(data)
+            file.close()
+            return 1
+        else:
+            return 0
+
 
     def edit(self, fileName, newFile):
         """
