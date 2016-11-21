@@ -145,9 +145,14 @@ class UserInterface:
             print('\n==========================================')
             print('You have chosen to search the database!')
             print('==========================================')
-            file = str(input('Please enter a filename: '))
+            fileName = str(input('Please enter a filename: '))
 
-            #self.user.search(file)
+            response = self.user.search(fileName)
+            # results of search
+            if response == 1:
+                print(fileName, ': is Found!\n')
+
+            else: print('File "NOT" Found!\n')
 
         elif choice == 'D':
             print('\n==========================================')

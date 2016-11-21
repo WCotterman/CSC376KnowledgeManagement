@@ -127,6 +127,34 @@ class Client:
 
         :return: contents of file, or an error msg if file doesn't exist
         """
+        # initial msg
+        info = json.dumps({'type': 'search',
+                            'user': self.name,
+                           'name': fileName,})
+
+        self.sock.send(info.encode())
+
+        # server tells client file 
+        
+        if self.sock.recv(1024).decode() == '1':
+
+            file = open('files/' + fileName, 'w')
+            #data = self.sock.recv(1024).decode()
+
+            #keep recieving until EOF
+            while(True):
+                data = self.sock.recv(1024).decode()
+                
+                if data == '2':
+                    file.close()
+                    break
+                else:
+                    file.write(data)
+            file.close()
+            return 1
+        else:
+            return 0
+
 
     def edit(self, fileName, newFile):
         """
