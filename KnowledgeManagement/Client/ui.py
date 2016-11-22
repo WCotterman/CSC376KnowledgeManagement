@@ -37,7 +37,7 @@ class UserInterface:
                 pword = str(input("Password: "))
 
                     # encrypt password before sending to server
-
+                pword = hashlib.sha1(pword.encode()).hexdigest()
                     # call client login function
                 response = self.user.login(username, pword)
 
@@ -57,9 +57,9 @@ class UserInterface:
                         # ^^lies there is no while loop idk who wrote this but.....
             # new user
         elif choice == 'c':
-            # call register function                
+            # call register function
             self.register()
-            
+
             # improper input
         elif choice == 'e':
             # exit out of program
@@ -150,7 +150,7 @@ class UserInterface:
             response = self.user.download(file)
             if response == 1:
                 print("Success!! file retrieved...\n")
-            else: 
+            else:
                 print ("Error!! cannot find file.. ")
 
 
@@ -158,11 +158,11 @@ class UserInterface:
             print('\n==========================================')
             print('You have chosen to search for a file!')
             print('==========================================')
-            file = str(input('Please enter a search term: '))
+            file = str(input('Please enter a keyword to search for: '))
             if self.user.search(file):
                 print("")
 
-                
+
         elif choice == 'D':
             print('\n==========================================')
             print('You have chosen to delete an existing file!')
@@ -193,5 +193,3 @@ if __name__ == "__main__":
         print('D -> Delete an existing file')
         print('Q -> Quit')
         UI.menu_choice()
-
-

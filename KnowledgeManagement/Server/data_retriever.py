@@ -94,16 +94,17 @@ class DataRetriever( threading.Thread ):
                     print("Success! Starting File Transfer..")
                     self.connection.send('SOF'.encode())
                     self.sendFile(info['fileName'])
-                    
-                    
+
+
                 else:
                     print("Error! The file was not found.. please verify the file exists")
-                    
+                    self.connection.send('FNF'.encode())
+
 
 
             elif type == 'search':
                 query = info['query']
-                
+
                 if self.db.search(query):
 		#send back file to client
                     print("Success! The file was found")
@@ -111,7 +112,8 @@ class DataRetriever( threading.Thread ):
                     self.sendQuery(query)
                 else:
                     print("Error! The file was not found.. please verify the file exists")
-                    
+                    self.connection.send('FNF'.encode())
+
 
 
             elif type == 'delete':
@@ -149,11 +151,11 @@ class DataRetriever( threading.Thread ):
 
         result = self.db.search(query)
         result = json.dumps(result)
-        
+
         self.connection.send(result.encode())
         self.connection.send('SOQ'.encode())
 
-        
+
     def edit(self, fileName, newFile):
         """
         Replaces the content of a file in the db

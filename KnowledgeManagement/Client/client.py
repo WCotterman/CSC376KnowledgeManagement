@@ -115,8 +115,6 @@ class Client:
 
         self.sock.send(info.encode())
 
-        path = (str(os.path.abspath(fileName)))
-        os.remove(path)
 
     def search(self, query):
         """
@@ -135,6 +133,11 @@ class Client:
             print("\nSuccess, here are possible matches:")
             self.retrieveQuery(query)
             return 1
+
+        elif result == 'FNF':
+            print("\nNo files were found matching that keyword")
+            return 1
+
         else:
             return 0
 
@@ -154,7 +157,7 @@ class Client:
         if flag == 'SOF':
             self.retrieveFile(fileName)
             return 1
-        
+
     def retrieveQuery(self,query):
             data = self.sock.recv(1024).decode()
             #keep recieving until EOQ
@@ -165,7 +168,7 @@ class Client:
                     data = self.sock.recv(1024).decode()
                     print(data+"\n")
                     return 1
-            
+
     def retrieveFile(self,fileName):
             # create the file on client side
             file = open('downloads/' + fileName, 'w')
@@ -174,17 +177,17 @@ class Client:
             #keep recieving until EOF
             while(True):
                 data = self.sock.recv(1024).decode()
-                
+
                 if data == 'EOF':
                     file.close()
                     break
                 else:
                     file.write(data)
             file.close()
-                
 
-        
-              
+
+
+
     def edit(self, fileName, newFile):
         """
         Asks the data_retriever to replace content of a file
